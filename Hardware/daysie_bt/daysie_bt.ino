@@ -31,11 +31,18 @@ int minX = 0;
 int month = 1;
 String msg = "";
 String goal = "";
-int boot[][7] = { {0, 0, 0, 0, 0, 0, 0},
+int boot[][7] = { 
+  {0, 0, 0, 0, 0, 0, 0},
   {0, 1, 0, 0, 0, 1, 0},
   {0, 0, 0, 0, 0, 0, 0},
-  {2, 0, 0, 0, 0, 0, 2},
-  {0, 3, 3, 3, 3, 3, 0}
+  {1, 0, 0, 0, 0, 0, 1},
+  {0, 1, 1, 1, 1, 1, 0}
+};
+int heart[][7] = { {0, 2, 2, 0, 2, 2, 0},
+  {2, 2, 2, 2, 2, 2, 2},
+  {0, 2, 2, 2, 2, 2, 0},
+  {0, 0, 2, 2, 2, 0, 0},
+  {0, 0, 0, 2, 0, 0, 0}
 };
 
 ///
@@ -101,6 +108,7 @@ void loop() {
   if (BTSerial.available()) {
 
     if (BTSerial.read() == 'T') {
+      drawLoadingScreen();
       msg = BTSerial.readString();
       refresh=true;
       x=0;
@@ -147,8 +155,8 @@ void loop() {
       switch (msg.charAt(i)) {
         case '0': break;
         case '1': matrix.drawPixel(i%7, int(floor(i/7)), LED_GREEN); break;
-        case '2': matrix.drawPixel(i%7, int(floor(i/7)), LED_RED); break;
-        case '3': matrix.drawPixel(i%7, int(floor(i/7)), LED_YELLOW); break;
+        case '3': matrix.drawPixel(i%7, int(floor(i/7)), LED_RED); break;
+        case '2': matrix.drawPixel(i%7, int(floor(i/7)), LED_YELLOW); break;
         default: Serial.println("unknown led val"); break;
       }
       
@@ -159,4 +167,30 @@ void loop() {
 
   //if (Serial.available())
   //  BTSerial.write(Serial.read());
+}
+
+//draws a loading screen
+void drawLoadingScreen() {
+  matrix.clear();
+  matrix.setRotation(1);
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 7; j++) {
+      switch(heart[i][j]) {
+        case 0: break;
+        case 1: matrix.drawPixel(j,i, LED_GREEN); break;
+        case 2: matrix.drawPixel(j,i, LED_RED); break;
+        case 3: matrix.drawPixel(j,i, LED_YELLOW); break;
+        default: Serial.println("unknown led val"); break;
+      }
+    }
+  }
+  matrix.writeDisplay();
+  
+  display.clearDisplay();
+  display.setTextSize(2); // Draw X-scale text
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextWrap(false);
+  display.setCursor(10, 10);
+  display.println(F("Loading..."));
+  display.display();
 }
