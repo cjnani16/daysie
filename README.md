@@ -1,3 +1,4 @@
+![image of daysie final product with app](http://www.jnani.me/images/daysie.jpg)
 # daysie
 A lil bluetooth habit tracking device made for your desk.
 
